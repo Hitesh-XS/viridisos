@@ -21,6 +21,7 @@
     "CITATION.cff",
     "OPEN_SOURCE_MANIFEST.json",
     "PLATFORM_CATALOG.md",
+    "CANON_INTEGRATION.md",
     "VIRIDISOS_NETWORK_EFFECT_STANDARD.md",
     "pyproject.toml",
     "catalog.py",
@@ -33,7 +34,8 @@
     "modules/_template/**",
     "runtime/**/*.py",
     "runtime/**/*.json",
-    "tests/**/*.py"
+    "tests/**/*.py",
+    "tools/**/*.py"
   ],
   "exclude": [
     "**/__pycache__/**",

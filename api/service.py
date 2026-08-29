@@ -6,6 +6,7 @@ pure function (method, path, body) -> (status, dict) so it is testable without s
 
 Endpoints:
   GET  /modules
+  GET  /research-kernels
   POST /modules/{id}/preview      {inputs}
   POST /modules/{id}/certify      {subject, inputs}
   POST /certificates/verify       {certificate_id, module_id, inputs}
@@ -18,19 +19,24 @@ from typing import Optional
 
 from runtime.module import CertifyBlocked
 from runtime.registry import ModuleRegistry
-from runtime.canon_resolver import CanonResolver
+from runtime.canon_kernel_registry import CanonKernelRegistry
 from certification.certifier import Certifier
 from certification.standard import STANDARD
 
 
 class ViridisOSService:
-    def __init__(self, registry: ModuleRegistry, certifier: Optional[Certifier] = None):
+    def __init__(self, registry: ModuleRegistry, certifier: Optional[Certifier] = None,
+                 research_registry: Optional[CanonKernelRegistry] = None):
         self.registry = registry
         self.certifier = certifier or Certifier()
+        self.research_registry = research_registry or CanonKernelRegistry()
         self._issued = {}   # certificate_id -> Certificate (for verify-by-id)
 
     def list_modules(self) -> dict:
         return {"modules": self.registry.list_modules()}
+
+    def list_research_kernels(self) -> dict:
+        return self.research_registry.as_dict()
 
     def preview(self, module_id: str, inputs: dict) -> dict:
         module = self.registry.get(module_id)
@@ -59,6 +65,8 @@ def dispatch(service: ViridisOSService, method: str, path: str, body: Optional[d
     try:
         if method == "GET" and path == "/modules":
             return 200, service.list_modules()
+        if method == "GET" and path == "/research-kernels":
+            return 200, service.list_research_kernels()
         if method == "GET" and path == "/standard":
             return 200, service.standard()
         if method == "POST" and len(parts) == 3 and parts[0] == "modules" and parts[2] == "preview":

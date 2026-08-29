@@ -1,0 +1,22 @@
+{
+  "series-forestnucleation": {
+    "module_id": "restoration",
+    "decision_tree_paths": ["restoration"],
+    "disposition": "MODULE_CATALOG_RECONCILIATION_REQUIRED"
+  },
+  "series-afforestationstewardship": {
+    "module_id": "afforestation",
+    "decision_tree_paths": ["restoration"],
+    "disposition": "MODULE_CATALOG_RECONCILIATION_REQUIRED"
+  },
+  "series-gaianharmonization": {
+    "module_id": "harmonization",
+    "decision_tree_paths": ["governance"],
+    "disposition": "MODULE_CATALOG_RECONCILIATION_REQUIRED"
+  },
+  "carbon-continuity-after-wildfire": {
+    "module_id": "carbon-continuity",
+    "decision_tree_paths": ["risk-insurance"],
+    "disposition": "MODULE_BLOCKED_CANON_ADMISSION_REQUIRED"
+  }
+}
