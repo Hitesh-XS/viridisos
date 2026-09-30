@@ -1,5 +1,7 @@
 # ViridisOS
 
+[![CI](https://github.com/jdhart81/viridisos/actions/workflows/ci.yml/badge.svg)](https://github.com/jdhart81/viridisos/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jdhart81/viridisos/badge)](https://scorecard.dev/viewer/?uri=github.com/jdhart81/viridisos)
+
 Viridis Canon is the verified truth and provenance layer. ViridisOS is the
 participation layer that lets builders turn those Lean-verified results into
 recomputable conservation modules and certificates. This is the intended
