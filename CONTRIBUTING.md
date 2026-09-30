@@ -56,4 +56,4 @@ scan blocks known key formats. If you find a leaked secret, report it privately 
 
 ## Names and marks
 
-The license does not cover Viridis names, logos or certification marks. See `TRADEMARKS.md`.
+The license does not cover Viridis names, logos or certification marks. See `TRADEMARK.md`.

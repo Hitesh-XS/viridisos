@@ -6,6 +6,8 @@
   "documentation_license": "CC-BY-4.0",
   "include": [
     ".github/**",
+    ".gitleaks.toml",
+    ".zenodo.json",
     "LICENSE",
     "DOCUMENTATION_LICENSE.md",
     "NOTICE",
