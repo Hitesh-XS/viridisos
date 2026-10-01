@@ -60,26 +60,66 @@ class ViridisOSService:
 
 
 def dispatch(service: ViridisOSService, method: str, path: str, body: Optional[dict]) -> tuple[int, dict]:
-    body = body or {}
+    if body is None:
+        body = {}
+
+    if not isinstance(body, dict):
+        return 400, {"error": "bad request", "detail": "body must be a JSON object"}
+
     parts = [p for p in path.strip("/").split("/") if p]
+
     try:
         if method == "GET" and path == "/modules":
             return 200, service.list_modules()
+
         if method == "GET" and path == "/research-kernels":
             return 200, service.list_research_kernels()
+
         if method == "GET" and path == "/standard":
             return 200, service.standard()
+
         if method == "POST" and len(parts) == 3 and parts[0] == "modules" and parts[2] == "preview":
-            return 200, service.preview(parts[1], body.get("inputs", {}))
+            inputs = body.get("inputs", {})
+            if not isinstance(inputs, dict):
+                return 400, {"error": "bad request", "detail": "inputs must be a JSON object"}
+
+            try:
+                return 200, service.preview(parts[1], inputs)
+            except KeyError as e:
+                return 400, {"error": "bad request", "detail": f"missing required input: {e.args[0]}"}
+
         if method == "POST" and len(parts) == 3 and parts[0] == "modules" and parts[2] == "certify":
-            return 200, service.certify(parts[1], body.get("subject", ""), body.get("inputs", {}))
+            inputs = body.get("inputs", {})
+            if not isinstance(inputs, dict):
+                return 400, {"error": "bad request", "detail": "inputs must be a JSON object"}
+
+            try:
+                return 200, service.certify(
+                    parts[1],
+                    body.get("subject", ""),
+                    inputs,
+                )
+            except KeyError as e:
+                return 400, {"error": "bad request", "detail": f"missing required input: {e.args[0]}"}
+
         if method == "POST" and path == "/certificates/verify":
-            return 200, service.verify(body.get("certificate_id", ""), body.get("module_id", ""),
-                                       body.get("inputs", {}))
+            inputs = body.get("inputs", {})
+            if not isinstance(inputs, dict):
+                return 400, {"error": "bad request", "detail": "inputs must be a JSON object"}
+
+            return 200, service.verify(
+                body.get("certificate_id", ""),
+                body.get("module_id", ""),
+                inputs,
+            )
+
         return 404, {"error": "not found"}
+
     except CertifyBlocked as e:
         return 409, {"error": "blocked", "detail": str(e)}      # A-1/A-3 → 409 Conflict
+
     except KeyError as e:
         return 404, {"error": "not found", "detail": str(e)}
+
     except (ValueError, TypeError) as e:
         return 400, {"error": "bad request", "detail": str(e)}
