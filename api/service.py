@@ -40,11 +40,18 @@ class ViridisOSService:
 
     def preview(self, module_id: str, inputs: dict) -> dict:
         module = self.registry.get(module_id)
-        return module.preview(inputs).to_dict()
+        try:
+            return module.preview(inputs).to_dict()
+        except KeyError as e:
+            raise ValueError(f"missing required input: {e.args[0]}") from e
 
     def certify(self, module_id: str, subject: str, inputs: dict) -> dict:
         module = self.registry.get(module_id)
-        cert = self.certifier.issue(module, subject=subject, inputs=inputs)
+        try:
+            cert = self.certifier.issue(module, subject=subject, inputs=inputs)
+        except KeyError as e:
+            raise ValueError(f"missing required input: {e.args[0]}") from e
+
         self._issued[cert.certificate_id] = cert
         return cert.to_dict()
 
@@ -64,7 +71,10 @@ def dispatch(service: ViridisOSService, method: str, path: str, body: Optional[d
         body = {}
 
     if not isinstance(body, dict):
-        return 400, {"error": "bad request", "detail": "body must be a JSON object"}
+        return 400, {
+            "error": "bad request",
+            "detail": "body must be a JSON object",
+        }
 
     parts = [p for p in path.strip("/").split("/") if p]
 
@@ -81,26 +91,26 @@ def dispatch(service: ViridisOSService, method: str, path: str, body: Optional[d
         if method == "POST" and len(parts) == 3 and parts[0] == "modules" and parts[2] == "preview":
             inputs = body.get("inputs", {})
             if not isinstance(inputs, dict):
-                return 400, {"error": "bad request", "detail": "inputs must be a JSON object"}
+                return 400, {
+                    "error": "bad request",
+                    "detail": "inputs must be a JSON object",
+                }
 
-            try:
-                return 200, service.preview(parts[1], inputs)
-            except KeyError as e:
-                return 400, {"error": "bad request", "detail": f"missing required input: {e.args[0]}"}
+            return 200, service.preview(parts[1], inputs)
 
         if method == "POST" and len(parts) == 3 and parts[0] == "modules" and parts[2] == "certify":
             inputs = body.get("inputs", {})
             if not isinstance(inputs, dict):
-                return 400, {"error": "bad request", "detail": "inputs must be a JSON object"}
+                return 400, {
+                    "error": "bad request",
+                    "detail": "inputs must be a JSON object",
+                }
 
-            try:
-                return 200, service.certify(
-                    parts[1],
-                    body.get("subject", ""),
-                    inputs,
-                )
-            except KeyError as e:
-                return 400, {"error": "bad request", "detail": f"missing required input: {e.args[0]}"}
+            return 200, service.certify(
+                parts[1],
+                body.get("subject", ""),
+                inputs,
+            )
 
         if method == "POST" and path == "/certificates/verify":
             inputs = body.get("inputs", {})
@@ -116,7 +126,7 @@ def dispatch(service: ViridisOSService, method: str, path: str, body: Optional[d
         return 404, {"error": "not found"}
 
     except CertifyBlocked as e:
-        return 409, {"error": "blocked", "detail": str(e)}      # A-1/A-3 → 409 Conflict
+        return 409, {"error": "blocked", "detail": str(e)}  # A-1/A-3 → 409 Conflict
 
     except KeyError as e:
         return 404, {"error": "not found", "detail": str(e)}
