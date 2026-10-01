@@ -1,0 +1,23 @@
+{
+  "title": "ViridisOS Reference Runtime",
+  "upload_type": "software",
+  "description": "Open reference runtime for DOI-backed Viridis decision modules: module runtime, certification layer, reference modules, and HTTP and MCP surfaces.",
+  "creators": [
+    {
+      "name": "Hart, Justin D.",
+      "affiliation": "Viridis LLC",
+      "orcid": "0009-0008-3082-2482"
+    }
+  ],
+  "license": "apache-2.0",
+  "keywords": [
+    "conservation",
+    "ecology",
+    "decision support",
+    "reproducible research",
+    "provenance",
+    "Lean 4",
+    "MCP"
+  ],
+  "access_right": "open"
+}
