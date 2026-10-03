@@ -50,6 +50,7 @@
     "VIRIDISOS_NETWORK_STATE.json",
     "VIRIDISOS_NETWORK_STATE.md",
     "tests/test_network_state.py",
+    "tests/test_diagnostic_delivery_kit.py",
     "*BUSINESS*",
     "*HANDOFF*",
     "*DEPLOY*"
